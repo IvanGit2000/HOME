@@ -3,8 +3,8 @@
         "model": "goods.categories",
         "pk": 1,
         "fields": {
-            "name": "All category",
-            "slug": "all-category"
+            "name": "All",
+            "slug": "all"
         }
     },
     {
