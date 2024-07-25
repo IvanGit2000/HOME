@@ -40,6 +40,8 @@ def q_search(query):
     )
 
     return result
+
+
     # return Products.objects.annotate(search=SearchVector('name', 'description')).filter(search=query)
 
     # retudwadsadrn Products.objects.filter(description__search=query)
