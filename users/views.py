@@ -1,46 +1,55 @@
 from django.contrib import auth
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponseRedirect
-from django.urls import reverse 
+from django.urls import reverse
 
-from users.forms import UserLoginform
-
+from users.forms import UserLoginform, UserRegistrationForm
 
 
 def login(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = UserLoginform(data=request.POST)
         if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
+            username = request.POST["username"]
+            password = request.POST["password"]
             user = auth.authenticate(username=username, password=password)
-            if user: 
+            if user:
                 auth.login(request, user)
-                return HttpResponseRedirect(reverse('main:index'))
+                
+                return HttpResponseRedirect(reverse("main:index"))
     else:
         form = UserLoginform()
-        
 
     context = {
-        'title': 'Home - authorization', 
-        'form': form,
+        "title": "Home - authorization",
+        "form": form,
     }
-    return render(request, 'users/login.html', context)
+    return render(request, "users/login.html", context)
 
 
 def registration(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.instance
+            auth.login(request, user)
+            return HttpResponseRedirect(reverse("main:index"))
+    else:
+        form = UserRegistrationForm()
+
     context = {
-        'title': 'Home - registration'
+        "title": "Home - registration",
+        "form": form,
     }
-    return render(request, 'users/registration.html', context)
+    return render(request, "users/registration.html", context)
 
 
-def profile(request):  
-    context = {
-        'title': 'Home - profile'
-    }
-    return render(request, 'users/profile.html', context)
+def profile(request):
+    context = {"title": "Home - profile"}
+    return render(request, "users/profile.html", context)
 
 
-def logout(request): 
-    ...
+def logout(request):
+    auth.logout(request)
+    return redirect(reverse("main:index"))
